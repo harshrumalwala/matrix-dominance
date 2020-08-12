@@ -1,1 +1,1 @@
-# matrix-dominance
+# matrix-dominance game
