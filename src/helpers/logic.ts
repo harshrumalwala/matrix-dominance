@@ -117,3 +117,22 @@ export const getUnassignedAndCompletedCells = (
         matrixSize
       );
 };
+
+export const isMatrixComplete = (matrix: Array<string>): boolean =>
+  !_.includes(matrix, '');
+
+export const getWinner = (matrix: Array<string>): string => {
+  const playersCellCount: { [key: string]: number } = _.countBy(matrix);
+  const numberOfWinners: { [key: number]: number } = _.countBy(
+    playersCellCount
+  );
+
+  const winner: string = _.maxBy(
+    Object.keys(playersCellCount),
+    (o) => playersCellCount[o]
+  ) as string;
+
+  return numberOfWinners[playersCellCount[winner]] === 1
+    ? `${winner} won the board`
+    : 'Draw';
+};

@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import _ from 'lodash';
 
 import { Container, Row, Dot, Cell } from 'styles';
 import LineTo from 'react-lineto';
 import { mergeUtil } from 'helpers/util';
-import { getUnassignedAndCompletedCells } from 'helpers/logic';
+import {
+  getUnassignedAndCompletedCells,
+  getWinner,
+  isMatrixComplete,
+} from 'helpers/logic';
 
-const matrixSize = 8;
+const matrixSize = 3;
 
 const App = () => {
   const [edges, setEdges] = useState<{ [key: number]: Array<number> }>({});
-  const [matrix, setMatrix] = useState(Array(49).fill(''));
+  const [matrix, setMatrix] = useState(
+    Array((matrixSize - 1) * (matrixSize - 1)).fill('')
+  );
   const [start, setStart] = useState(-1);
   const [players, setPlayers] = useState(['HR', 'MR', 'AR']);
   const [playersTurn, setPlayersTurn] = useState(0);
+  const [message, setMessage] = useState(`${players[0]}'s turn`);
+
+  useEffect(() => {
+    setMessage(`${players[playersTurn]}'s turn`);
+  }, [playersTurn, players]);
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
@@ -24,7 +35,8 @@ const App = () => {
       _.includes(
         [start - 1, start + 1, start + matrixSize, start - matrixSize],
         idx
-      )
+      ) &&
+      !_.includes(edges[start], idx)
     ) {
       setEdges((prevState) =>
         mergeUtil(prevState, { [start]: [idx], [idx]: [start] })
@@ -42,7 +54,8 @@ const App = () => {
         updatedMatrix[o] = players[playersTurn];
         setMatrix(updatedMatrix);
       });
-      _.size(matrixIdxToBeUpdated) === 0 &&
+      if (isMatrixComplete(matrix)) setMessage(getWinner(matrix));
+      else if (_.size(matrixIdxToBeUpdated) === 0)
         setPlayersTurn((playersTurn + 1) % _.size(players));
     } else {
       setStart(idx);
@@ -51,7 +64,7 @@ const App = () => {
 
   return (
     <Container>
-      <p>Player's Turn : {players[playersTurn]}</p>
+      <h3>{message}</h3>
       {_.times(2 * matrixSize - 1, (i) => (
         <Row key={i}>
           {i % 2 === 0 &&
