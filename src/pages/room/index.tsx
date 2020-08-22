@@ -1,77 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
-import { useParams } from 'react-router-dom';
-
-import { Container, Row, Dot, Cell } from 'styles';
+import React from 'react';
 import LineTo from 'react-lineto';
-import { mergeUtil } from 'helpers/util';
-import {
-  getUnassignedAndCompletedCells,
-  getWinner,
-  isMatrixComplete,
-} from 'helpers/logic';
+import _ from 'lodash';
 
-const matrixSize = 3;
+import { Container, Row, Dot, Cell, Button } from 'styles';
+import {
+  useRoom,
+  useDimensions,
+  useConnectDots,
+  useCreateNewGame,
+} from 'hooks';
 
 const Room = () => {
-  const { id }: { id: string } = useParams();
-  const [edges, setEdges] = useState<{ [key: number]: Array<number> }>({});
-  const [matrix, setMatrix] = useState(
-    Array((matrixSize - 1) * (matrixSize - 1)).fill('')
-  );
-  const [start, setStart] = useState(-1);
-  const [players, setPlayers] = useState(['HR', 'MR', 'AR']);
-  const [playersTurn, setPlayersTurn] = useState(0);
-  const [message, setMessage] = useState(`${players[0]}'s turn`);
+  const { isFetching, room } = useRoom();
+  const { isConnecting, connectDots } = useConnectDots();
+  const { isCreatingNewGame, createNewGame } = useCreateNewGame();
 
-  useEffect(() => {
-    setMessage(`${players[playersTurn]}'s turn`);
-  }, [playersTurn, players]);
+  useDimensions();
+
+  if (isFetching) return <h1>Loading Room...</h1>;
+
+  if (!room) return <h1>Room Not Found</h1>;
+
+  const { selectedDot, edges, matrix, message, matrixSize, players } = room;
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
+    connectDots(idx, room);
+  };
 
-    if (
-      start !== -1 &&
-      _.includes(
-        [start - 1, start + 1, start + matrixSize, start - matrixSize],
-        idx
-      ) &&
-      !_.includes(edges[start], idx)
-    ) {
-      setEdges((prevState) =>
-        mergeUtil(prevState, { [start]: [idx], [idx]: [start] })
-      );
-      setStart(-1);
-      const matrixIdxToBeUpdated = getUnassignedAndCompletedCells(
-        start,
-        idx,
-        edges,
-        matrix,
-        matrixSize
-      );
-      _.forEach(matrixIdxToBeUpdated, (o) => {
-        const updatedMatrix = matrix;
-        updatedMatrix[o] = players[playersTurn];
-        setMatrix(updatedMatrix);
-      });
-      if (isMatrixComplete(matrix)) setMessage(getWinner(matrix));
-      else if (_.size(matrixIdxToBeUpdated) === 0)
-        setPlayersTurn((playersTurn + 1) % _.size(players));
-    } else {
-      setStart(idx);
-    }
+  const startNewGame = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    createNewGame(players, matrixSize);
   };
 
   return (
     <Container>
-      <h1>{id}</h1>
       <h3>{message}</h3>
       {_.times(2 * matrixSize - 1, (i) => (
         <Row key={i}>
           {i % 2 === 0 &&
             _.times(matrixSize, (j) => (
               <Dot
+                isSelected={selectedDot === (i / 2) * matrixSize + j}
                 key={(i / 2) * matrixSize + j}
                 onClick={(e: React.MouseEvent<HTMLInputElement>) =>
                   handleClick(e, (i / 2) * matrixSize + j)
@@ -85,7 +55,8 @@ const Room = () => {
                 key={((i - 1) / 2) * (matrixSize - 1) + k}
                 className={`cell_${((i - 1) / 2) * matrixSize + k}`}
               >
-                {matrix[((i - 1) / 2) * (matrixSize - 1) + k]}
+                {matrix[((i - 1) / 2) * (matrixSize - 1) + k] &&
+                  matrix[((i - 1) / 2) * (matrixSize - 1) + k]}
               </Cell>
             ))}
         </Row>
@@ -100,6 +71,7 @@ const Room = () => {
           />
         ))
       )}
+      <Button onClick={startNewGame}>Create New Game</Button>
     </Container>
   );
 };
