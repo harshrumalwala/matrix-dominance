@@ -1,5 +1,16 @@
 export interface DotProps {
   isSelected: boolean;
+  dotId: number;
+  matrixSize: number;
+}
+
+export interface CellProps {
+  cellId: number;
+  matrixSize: number;
+}
+
+export interface GridProps {
+  isConnectingDots: boolean;
 }
 
 export interface Room {
@@ -23,7 +34,7 @@ export interface Window {
 }
 
 export interface ConnectDotsOutput {
-  isConnecting: boolean;
+  isConnectingDots: boolean;
   connectDots: (idx: number, room: Room) => void;
 }
 
