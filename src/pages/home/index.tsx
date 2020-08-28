@@ -11,10 +11,22 @@ const Home = () => {
     history.push('/room/AAA');
   };
 
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/login');
+  };
+
+  const handleProfile = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/profile');
+  };
+
   return (
     <div>
       <Header>Home</Header>
       <Button onClick={handleClick}>Go to game room</Button>
+      <Button onClick={handleLogin}>Login</Button>
+      <Button onClick={handleProfile}>Profile</Button>
     </div>
   );
 };

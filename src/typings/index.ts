@@ -49,3 +49,13 @@ export interface CountdownOutput {
   counter: number;
   setCounter: Dispatch<number>;
 }
+
+export interface FieldProps {
+  id: string;
+  label: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+  type: string;
+  value: string;
+  errorMessage?: string;
+}

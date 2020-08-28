@@ -1,4 +1,4 @@
-import { getNewGameState } from 'helpers/logic';
+import { getNewGameState } from 'pages/room/helpers/logic';
 import { CreateNewGameOutput } from 'typings';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';

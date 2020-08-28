@@ -6,7 +6,6 @@ const useCountdown = (startingTimer: number = 10): CountdownOutput => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log('i am noobie')
       setCounter(counter - 1);
     }, 1000);
     if (counter === 0) clearInterval(interval);
