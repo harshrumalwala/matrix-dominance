@@ -1,3 +1,5 @@
+import { Dispatch } from 'react';
+
 export interface DotProps {
   isSelected: boolean;
   dotId: number;
@@ -41,4 +43,9 @@ export interface ConnectDotsOutput {
 export interface CreateNewGameOutput {
   isCreatingNewGame: boolean;
   createNewGame: (players: Array<string>, matrixSize: number) => void;
+}
+
+export interface CountdownOutput {
+  counter: number;
+  setCounter: Dispatch<number>;
 }

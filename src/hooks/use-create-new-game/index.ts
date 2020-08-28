@@ -1,5 +1,5 @@
-import { getNewGameState } from './../../helpers/logic';
-import { CreateNewGameOutput } from './../../typings/index';
+import { getNewGameState } from 'helpers/logic';
+import { CreateNewGameOutput } from 'typings';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 

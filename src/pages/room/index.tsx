@@ -9,12 +9,14 @@ import {
   useDimensions,
   useConnectDots,
   useCreateNewGame,
+  useCountDown,
 } from 'hooks';
 
 const Room = () => {
   const { isFetching, room } = useRoom();
   const { isConnectingDots, connectDots } = useConnectDots();
   const { isCreatingNewGame, createNewGame } = useCreateNewGame();
+  const { counter, setCounter } = useCountDown();
 
   useDimensions();
 
@@ -40,7 +42,7 @@ const Room = () => {
 
   return (
     <Container>
-      <h4>{message}</h4>
+      <h3>{message}</h3>
       <Grid isConnectingDots={isConnectingDots}>
         {_.times(2 * matrixSize - 1, (i: number) => (
           <Row key={i}>

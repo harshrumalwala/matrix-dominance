@@ -1,4 +1,4 @@
-import { getUpdatedBoardState, isMatrixComplete } from './../../helpers/logic';
+import { getUpdatedBoardState, isMatrixComplete } from 'helpers/logic';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
