@@ -1,16 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Field, Header, Button } from 'components';
+import _ from 'lodash';
+import { auth, db } from 'services';
+
+import { Field, Header, Button, ErrorMessage } from 'components';
+import { usePrevious } from 'hooks';
 
 const Login = () => {
   const history = useHistory();
   const [nickName, setNickName] = useState<string>('');
-  const [nameInitials, setNameInitials] = useState<string>('');
+  const [nickNameError, setNickNameError] = useState<string>('');
 
-  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const [nameInitials, setNameInitials] = useState<string>('');
+  const [nameInitialsError, setNameInitialsError] = useState<string>('');
+
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const [firebaseError, setFirebaseError] = useState<string>('');
+  const prevIsLoggingIn = usePrevious(isLoggingIn);
+
+  useEffect(() => {
+    setNickNameError('');
+    setNameInitialsError('');
+    setFirebaseError('');
+  }, [nickName, nameInitials]);
+
+  useEffect(() => {
+    nameInitials.length > 0 &&
+      _.size(nameInitials) !== 2 &&
+      setNameInitialsError('Name Initials should have exactly 2 characters');
+  }, [nameInitials]);
+
+  useEffect(() => {
+    prevIsLoggingIn && !isLoggingIn && !firebaseError && history.push('/');
+  }, [isLoggingIn, firebaseError, prevIsLoggingIn, history]);
+
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(nickName, nameInitials);
-    history.push('/');
+    console.log('message', nickNameError, nameInitialsError);
+    if (nickName.length === 0) return setNickNameError('Nick Name is required');
+    if (nameInitials.length === 0)
+      return setNameInitialsError('Name Initials is required');
+
+    if (!nickNameError && !nameInitialsError) {
+      setIsLoggingIn(true);
+      await auth
+        .signInAnonymously()
+        .then((response) => {
+          if (!response.user) throw new Error('Error while creating user');
+          db.collection('users')
+            .doc(response.user.uid)
+            .set({
+              nickName,
+              nameInitials,
+            })
+            .catch((error) => {
+              throw new Error(error.message);
+            });
+        })
+        .catch((error) => setFirebaseError(error.message));
+      setIsLoggingIn(false);
+    }
   };
 
   return (
@@ -23,6 +72,7 @@ const Login = () => {
         placeholder="Enter your Nick Name"
         type="text"
         value={nickName}
+        errorMessage={nickNameError}
       />
       <Field
         id="nameInitials"
@@ -31,9 +81,12 @@ const Login = () => {
         placeholder="Enter your Name Initials like AE for Albert Einstein"
         type="text"
         value={nameInitials}
-        errorMessage="Should have 2 characters"
+        errorMessage={nameInitialsError}
       />
-      <Button onClick={handleLogin}>Login</Button>
+      <Button disabled={isLoggingIn} onClick={handleLogin}>
+        Log{isLoggingIn ? 'ging' : ''} in
+      </Button>
+      {firebaseError && <ErrorMessage>{firebaseError}</ErrorMessage>}
     </>
   );
 };

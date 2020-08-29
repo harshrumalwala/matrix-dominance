@@ -8,15 +8,18 @@ import { ThemeProvider } from 'styled-components';
 import Routes from 'routes';
 import Layout from 'layout';
 import { GlobalStyles, theme } from 'styles';
+import { CurrentUserProvider } from 'hooks';
 
 ReactDOM.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <BrowserRouter>
-        <Layout>
-          <Routes />
-        </Layout>
+        <CurrentUserProvider>
+          <Layout>
+            <Routes />
+          </Layout>
+        </CurrentUserProvider>
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>,

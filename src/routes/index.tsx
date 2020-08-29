@@ -13,7 +13,7 @@ const Routes = () => (
     <Suspense fallback={<Header>Loading Page...</Header>}>
       <Route path="/room/:roomId" component={Room} />
       <Route exact path="/login" component={Login} />
-      <Route exact path="/profile" component={Profile} />
+      <Route exact path="/profile/:userId" component={Profile} />
       <Route exact path="/" component={Home} />
     </Suspense>
   </Switch>

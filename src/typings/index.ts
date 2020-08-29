@@ -30,6 +30,16 @@ export interface RoomOutput {
   room: Room | undefined;
 }
 
+export interface UserOutput {
+  isFetching: boolean;
+  user: User | undefined;
+}
+
+export interface User {
+  nickName: string;
+  nameInitials: string;
+}
+
 export interface Window {
   height: number;
   width: number;
@@ -58,4 +68,5 @@ export interface FieldProps {
   type: string;
   value: string;
   errorMessage?: string;
+  disabled?: boolean;
 }
