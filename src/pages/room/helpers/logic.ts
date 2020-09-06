@@ -1,6 +1,6 @@
 import { isHorizontalLine, mergeUtil } from './util';
 import _ from 'lodash';
-import { Room } from 'typings';
+import { Room, User } from 'typings';
 
 export const isCompleteCell = (
   arr: Array<number>,
@@ -13,7 +13,10 @@ export const isCompleteCell = (
   );
 };
 
-export const getWinner = (matrix: Array<string | null>): string => {
+export const getWinner = (
+  matrix: Array<string | null>,
+  users: { [key: string]: User } | undefined
+): string => {
   const playersCellCount: { [key: string]: number } = _.countBy(matrix);
   const numberOfWinners: { [key: number]: number } = _.countBy(
     playersCellCount
@@ -25,7 +28,7 @@ export const getWinner = (matrix: Array<string | null>): string => {
   ) as string;
 
   return numberOfWinners[playersCellCount[winner]] === 1
-    ? `${winner} won the board`
+    ? `${users?.[winner].nickName} won the board`
     : 'Draw';
 };
 
@@ -146,13 +149,16 @@ export const getUpdatedBoardState = ({
   matrix,
   players,
   playerTurn,
-  message,
-}: Room & { idx: number }): Omit<Room, 'players' | 'matrixSize'> => {
+  users,
+}: Room & { idx: number; users: { [key: string]: User } | undefined }): Omit<
+  Room,
+  'players' | 'matrixSize' | 'message'
+> => {
   let newEdges: { [key: number]: Array<number> } = _.merge({}, edges);
   let newSelectedDot: number = selectedDot;
-  let newMatrix: Array<string | null> = [...matrix];
-  let newMessage: string = message;
+  let newMatrix: Array<string | null> = enrichMatrix([...matrix], users);
   let newPlayerTurn: number = playerTurn;
+
   if (
     selectedDot !== -1 &&
     _.includes(
@@ -167,6 +173,7 @@ export const getUpdatedBoardState = ({
     !_.includes(edges[selectedDot], idx)
   ) {
     newEdges = mergeUtil(edges, { [selectedDot]: [idx], [idx]: [selectedDot] });
+
     newSelectedDot = -1;
     const matrixIdxToBeUpdated = getUnassignedAndCompletedCells(
       selectedDot,
@@ -178,32 +185,70 @@ export const getUpdatedBoardState = ({
     _.forEach(matrixIdxToBeUpdated, (o) => {
       newMatrix[o] = players[playerTurn];
     });
-    if (isMatrixComplete(newMatrix)) newMessage = getWinner(newMatrix);
-    else if (_.size(matrixIdxToBeUpdated) === 0) {
+    if (!isMatrixComplete(newMatrix) && _.size(matrixIdxToBeUpdated) === 0)
       newPlayerTurn = (playerTurn + 1) % _.size(players);
-      newMessage = `${players[newPlayerTurn]}'s turn`;
-    }
   } else {
     newSelectedDot = idx;
   }
+
   return {
     edges: newEdges,
     matrix: newMatrix,
     playerTurn: newPlayerTurn,
     selectedDot: newSelectedDot,
-    message: newMessage,
   };
 };
 
+export const enrichMatrix = (
+  matrix: Array<string | null>,
+  users: { [key: string]: User } | undefined
+): Array<string | null> =>
+  _.reduce(
+    matrix,
+    (acc: Array<string | null>, v: string | null) => {
+      v
+        ? acc.push(
+            _.chain(users).pickBy(['nameInitials', v]).keys().first().value()
+          )
+        : acc.push(null);
+      return acc;
+    },
+    []
+  );
+
 export const getNewGameState = (players: Array<string>, matrixSize: number) => {
   const randomPlayerTurn = Math.floor(Math.random() * _.size(players));
-  const newMessage = `${players[randomPlayerTurn]}'s turn`;
 
   return {
     edges: {},
     matrix: Array((matrixSize - 1) * (matrixSize - 1)).fill(null),
     selectedDot: -1,
     playerTurn: randomPlayerTurn,
-    message: newMessage,
+    players,
+    matrixSize,
   };
+};
+
+export const enrichRoom = (
+  room: Room,
+  users: { [key: string]: User } | undefined
+): Room => {
+  if (!users || _.isEmpty(users)) return room;
+
+  const matrix: Array<string | null> = _.reduce(
+    room.matrix,
+    (acc: Array<string | null>, v: string | null) => {
+      v ? acc.push(users[v].nameInitials) : acc.push(null);
+      return acc;
+    },
+    []
+  );
+  const message = isMatrixComplete(room.matrix)
+    ? getWinner(room.matrix, users)
+    : `${users[room.players[room.playerTurn]].nameInitials}'s turn`;
+  return {
+    ...room,
+    matrix,
+    message,
+  } as Room;
 };

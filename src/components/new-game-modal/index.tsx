@@ -1,15 +1,31 @@
 import React, { useState, FC } from 'react';
 
 import { Modal, Field, Button } from 'components';
-import { useModal } from 'hooks';
+import { useModal, useCreateNewGame } from 'hooks';
 
-const NewGameModal: FC<{ isNew: boolean }> = ({ isNew }) => {
+const NewGameModal: FC<{ isNew: boolean; players?: Array<string> }> = ({
+  isNew,
+  players,
+}) => {
   const { isShowing, toggle } = useModal();
   const [matrixSize, setMatrixSize] = useState<number | undefined>(undefined);
+  const { isCreatingNewGame, createNewGame } = useCreateNewGame();
 
   const submitAction = () => {
-    console.log('clicked on success');
+    if (matrixSize) {
+      if (isNew && players) {
+        createNewGame(players, parseInt(matrixSize.toString()));
+      } else {
+      }
+    }
+
+    toggle();
   };
+
+  const getSubmitText = () =>
+    isNew
+      ? `Start${isCreatingNewGame ? 'ing' : ''}`
+      : `Creat${isCreatingNewGame ? 'ing' : 'e'}`;
 
   return (
     <>
@@ -19,7 +35,7 @@ const NewGameModal: FC<{ isNew: boolean }> = ({ isNew }) => {
       <Modal
         isShowing={isShowing}
         hide={toggle}
-        submitText={isNew ? 'New' : 'Create'}
+        submitText={getSubmitText()}
         cancelText="Cancel"
         submitAction={submitAction}
       >

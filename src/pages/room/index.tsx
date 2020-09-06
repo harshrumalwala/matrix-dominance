@@ -2,36 +2,25 @@ import React from 'react';
 import LineTo from 'react-lineto';
 import _ from 'lodash';
 
-import { Header, Button } from 'components';
+import { Header, NewGameModal } from 'components';
 import { Container, Row, Dot, Cell, Grid } from './styles';
-import {
-  useRoom,
-  useDimensions,
-  useConnectDots,
-  useCreateNewGame,
-} from 'hooks';
+import { useRoom, useDimensions, useConnectDots } from 'hooks';
 
 const Room = () => {
-  const { isFetching, room } = useRoom();
+  const { isFetching, isFetchingUsers, room, users } = useRoom();
   const { isConnectingDots, connectDots } = useConnectDots();
-  const { isCreatingNewGame, createNewGame } = useCreateNewGame();
 
   useDimensions();
 
-  if (isFetching) return <Header>Loading Room...</Header>;
-
+  if (isFetching || isFetchingUsers || _.isEmpty(users)) return <Header>Loading Room...</Header>;
+  
   if (!room) return <Header>Room Not Found</Header>;
 
   const { selectedDot, edges, matrix, message, matrixSize, players } = room;
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
-    connectDots(idx, room);
-  };
-
-  const startNewGame = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    createNewGame(players, matrixSize);
+    connectDots(idx, room, users);
   };
 
   const getDotId = (x: number, y: number): number => (x / 2) * matrixSize + y;
@@ -81,9 +70,7 @@ const Room = () => {
           ))
         )}
       </Grid>
-      <Button disabled={isCreatingNewGame} onClick={startNewGame}>{`${
-        isCreatingNewGame ? 'Creating New Game' : 'New Game'
-      }`}</Button>
+      <NewGameModal isNew={true} players={players} />
     </Container>
   );
 };

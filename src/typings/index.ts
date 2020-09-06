@@ -27,7 +27,9 @@ export interface Room {
 
 export interface RoomOutput {
   isFetching: boolean;
+  isFetchingUsers: boolean;
   room: Room | undefined;
+  users: { [key: string]: User } | undefined;
 }
 
 export interface UsersOutput {
@@ -47,7 +49,11 @@ export interface Window {
 
 export interface ConnectDotsOutput {
   isConnectingDots: boolean;
-  connectDots: (idx: number, room: Room) => void;
+  connectDots: (
+    idx: number,
+    room: Room,
+    users: { [key: string]: User } | undefined
+  ) => void;
 }
 
 export interface CreateNewGameOutput {
