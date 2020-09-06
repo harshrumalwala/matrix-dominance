@@ -7,7 +7,7 @@ export const Container = styled.div`
   margin-bottom: 15px;
 `;
 
-export const Input = styled.input<{errorMessage?: string}>`
+export const Input = styled.input<{ errorMessage?: string }>`
   ${({ theme, errorMessage }) => css`
     background-color: ${theme.colors.white};
     border: solid 2px ${errorMessage ? 'red' : theme.colors.lightGray};
@@ -24,7 +24,7 @@ export const Input = styled.input<{errorMessage?: string}>`
   `}
 `;
 
-export const Label = styled.label<{errorMessage?: string}>`
+export const Label = styled.label<{ errorMessage?: string }>`
   ${({ theme, errorMessage }) => css`
     color: ${errorMessage ? 'red' : theme.colors.black};
     font-weight: bold;

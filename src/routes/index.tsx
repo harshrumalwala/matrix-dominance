@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import {Header} from 'components';
+import { Header } from 'components';
 
 const Home = lazy(() => import('pages/home'));
 const Room = lazy(() => import('pages/room'));

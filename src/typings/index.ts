@@ -30,9 +30,9 @@ export interface RoomOutput {
   room: Room | undefined;
 }
 
-export interface UserOutput {
+export interface UsersOutput {
   isFetching: boolean;
-  user: User | undefined;
+  users: { [key: string]: User } | undefined;
 }
 
 export interface User {
@@ -64,9 +64,11 @@ export interface FieldProps {
   id: string;
   label: string;
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange:
+    | ((value: string | undefined) => void)
+    | ((value: number | undefined) => void);
   type: string;
-  value: string;
-  errorMessage?: string;
+  value: string | number | undefined;
+  errorMessage?: string | undefined;
   disabled?: boolean;
 }

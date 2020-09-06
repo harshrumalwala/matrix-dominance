@@ -1,31 +1,30 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
+import _ from 'lodash';
 import { db } from 'services';
-import { UserOutput, User } from 'typings';
+import { UsersOutput, User } from 'typings';
 
-const useUser = (): UserOutput => {
+const useUsers = (userIds: Array<string | undefined>): UsersOutput => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [user, setUser] = useState<User | undefined>();
-  const { userId }: { userId: string } = useParams();
+  const [users, setUsers] = useState<{ [key: string]: User } | undefined>();
 
   useEffect(() => {
-    const unsubscribe = db
-      .collection('users')
-      .doc(userId)
-      .onSnapshot((doc) => {
-        doc.exists
-          ? setUser(doc.data() as User)
-          : console.log('User not found');
+    db.collection('users')
+      .get()
+      .then((querySnapshot) => {
+        let userList: { [key: string]: User } = {};
+        querySnapshot.forEach((doc) => {
+          if (_.includes(userIds, doc.id))
+            userList = _.merge(userList, { [doc.id]: doc.data() as User });
+        });
+        setUsers(userList);
         setIsFetching(false);
-      });
+      })
+      .catch((error) => console.log('Error while retrieving user ', error));
 
-    return () => {
-      unsubscribe();
-    };
-  }, [userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(userIds)]);
 
-  return { isFetching, user };
+  return { isFetching, users };
 };
 
-export default useUser;
+export default useUsers;

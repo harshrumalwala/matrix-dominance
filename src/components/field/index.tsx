@@ -13,7 +13,7 @@ const Field: FC<FieldProps> = ({
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    onChange(e.target.value);
+    onChange(e.target.value as never);
   };
 
   return (

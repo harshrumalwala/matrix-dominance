@@ -4,21 +4,29 @@ import { useParams, useHistory } from 'react-router-dom';
 
 import { Button, Field, Header } from 'components';
 import { db } from 'services';
-import { useCurrentUser, useUser } from 'hooks';
+import { useUsers, useCurrentUser } from 'hooks';
+import { User } from 'typings';
 
 const Profile: FC = () => {
   const { userId }: { userId: string } = useParams();
-  const { isFetching, user } = useUser();
+  const { isFetching, users } = useUsers([userId]);
+  const user: User | undefined = users?.[userId];
   const currentUser = useCurrentUser();
   const history = useHistory();
 
-  const [nickName, setNickName] = useState<string>(user?.nickName ?? '');
-  const [nickNameError, setNickNameError] = useState<string>('');
+  const [nickName, setNickName] = useState<string | undefined>(
+    user?.nickName ?? ''
+  );
+  const [nickNameError, setNickNameError] = useState<string | undefined>(
+    undefined
+  );
 
-  const [nameInitials, setNameInitials] = useState<string>(
+  const [nameInitials, setNameInitials] = useState<string | undefined>(
     user?.nameInitials ?? ''
   );
-  const [nameInitialsError, setNameInitialsError] = useState<string>('');
+  const [nameInitialsError, setNameInitialsError] = useState<
+    string | undefined
+  >(undefined);
 
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
@@ -28,21 +36,20 @@ const Profile: FC = () => {
   }, [isFetching, user]);
 
   useEffect(() => {
-    setNickNameError('');
-    setNameInitialsError('');
+    setNickNameError(undefined);
+    setNameInitialsError(undefined);
   }, [nickName, nameInitials]);
 
   useEffect(() => {
-    nameInitials.length > 0 &&
+    nameInitials &&
       _.size(nameInitials) !== 2 &&
       setNameInitialsError('Name Initials should have exactly 2 characters');
   }, [nameInitials]);
 
   const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (nickName.length === 0) return setNickNameError('Nick Name is required');
-    if (nameInitials.length === 0)
-      return setNameInitialsError('Name Initials is required');
+    if (!nickName) return setNickNameError('Nick Name is required');
+    if (!nameInitials) return setNameInitialsError('Name Initials is required');
     if (!nickNameError && !nameInitialsError) {
       setIsUpdating(true);
       db.collection('users')

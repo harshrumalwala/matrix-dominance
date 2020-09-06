@@ -21,7 +21,7 @@ const Logout: FC = () => {
         setFirebaseError(error.message);
         setIsLoggingOut(false);
       });
-      
+
     db.collection('users')
       .doc(currentUser?.uid)
       .delete()

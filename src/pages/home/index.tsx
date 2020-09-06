@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Header, Button, Logout } from 'components';
+import { Header, Button, Logout, NewGameModal } from 'components';
 import { useCurrentUser } from 'hooks';
 
 const Home = () => {
@@ -26,6 +26,7 @@ const Home = () => {
   return (
     <div>
       <Header>Home</Header>
+      <NewGameModal isNew={false} />
       <Button onClick={handleClick}>Go to game room</Button>
       {currentUser ? (
         <>

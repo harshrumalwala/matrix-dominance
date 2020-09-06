@@ -8,10 +8,10 @@ import { usePrevious } from 'hooks';
 
 const Login = () => {
   const history = useHistory();
-  const [nickName, setNickName] = useState<string>('');
+  const [nickName, setNickName] = useState<string | undefined>('');
   const [nickNameError, setNickNameError] = useState<string>('');
 
-  const [nameInitials, setNameInitials] = useState<string>('');
+  const [nameInitials, setNameInitials] = useState<string | undefined>('');
   const [nameInitialsError, setNameInitialsError] = useState<string>('');
 
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
@@ -25,7 +25,7 @@ const Login = () => {
   }, [nickName, nameInitials]);
 
   useEffect(() => {
-    nameInitials.length > 0 &&
+    nameInitials &&
       _.size(nameInitials) !== 2 &&
       setNameInitialsError('Name Initials should have exactly 2 characters');
   }, [nameInitials]);
@@ -37,9 +37,8 @@ const Login = () => {
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log('message', nickNameError, nameInitialsError);
-    if (nickName.length === 0) return setNickNameError('Nick Name is required');
-    if (nameInitials.length === 0)
-      return setNameInitialsError('Name Initials is required');
+    if (!nickName) return setNickNameError('Nick Name is required');
+    if (!nameInitials) return setNameInitialsError('Name Initials is required');
 
     if (!nickNameError && !nameInitialsError) {
       setIsLoggingIn(true);
