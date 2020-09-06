@@ -8,11 +8,6 @@ const Home = () => {
   const history = useHistory();
   const currentUser = useCurrentUser();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    history.push('/room/AAA');
-  };
-
   const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     history.push('/login');
@@ -26,10 +21,9 @@ const Home = () => {
   return (
     <div>
       <Header>Home</Header>
-      <NewGameModal isNew={false} />
-      <Button onClick={handleClick}>Go to game room</Button>
       {currentUser ? (
         <>
+          <NewGameModal isExisting={false} />
           <Button onClick={handleProfile}>Profile</Button>
           <Logout />
         </>

@@ -70,7 +70,7 @@ const Room = () => {
           ))
         )}
       </Grid>
-      <NewGameModal isNew={true} players={players} />
+      <NewGameModal isExisting={true} players={players} />
     </Container>
   );
 };

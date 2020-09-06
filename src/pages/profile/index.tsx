@@ -46,6 +46,8 @@ const Profile: FC = () => {
       setNameInitialsError('Name Initials should have exactly 2 characters');
   }, [nameInitials]);
 
+  if (isFetching) return <Header>Loading Profile</Header>;
+
   const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!nickName) return setNickNameError('Nick Name is required');
@@ -98,7 +100,7 @@ const Profile: FC = () => {
         disabled={isFetching || isUpdating || currentUser?.uid !== userId}
         onClick={handleUpdate}
       >
-        Updat{isFetching || isUpdating ? 'ing' : 'e'}
+        Updat{isUpdating ? 'ing' : 'e'}
       </Button>
       <Button onClick={handleClick}>Home</Button>
     </>

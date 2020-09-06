@@ -1,36 +1,43 @@
 import React, { useState, FC } from 'react';
-
+import { useHistory } from 'react-router-dom';
 import { Modal, Field, Button } from 'components';
-import { useModal, useCreateNewGame } from 'hooks';
+import { useModal, useCreateNewGame, useCurrentUser } from 'hooks';
 
-const NewGameModal: FC<{ isNew: boolean; players?: Array<string> }> = ({
-  isNew,
+const NewGameModal: FC<{ isExisting: boolean; players?: Array<string> }> = ({
+  isExisting,
   players,
 }) => {
+  const history = useHistory();
   const { isShowing, toggle } = useModal();
   const [matrixSize, setMatrixSize] = useState<number | undefined>(undefined);
-  const { isCreatingNewGame, createNewGame } = useCreateNewGame();
+  const { isCreatingNewGame, createNewGame } = useCreateNewGame(isExisting);
+  const currentUser = useCurrentUser();
 
-  const submitAction = () => {
+  const submitAction = async () => {
     if (matrixSize) {
-      if (isNew && players) {
+      toggle();
+      if (isExisting && players) {
         createNewGame(players, parseInt(matrixSize.toString()));
-      } else {
+      } else if (currentUser) {
+        const roomId = await createNewGame(
+          [currentUser.uid],
+          parseInt(matrixSize.toString())
+        );
+        console.log('changing history');
+        history.push(`/room/${roomId}`);
       }
     }
-
-    toggle();
   };
 
   const getSubmitText = () =>
-    isNew
+    isExisting
       ? `Start${isCreatingNewGame ? 'ing' : ''}`
       : `Creat${isCreatingNewGame ? 'ing' : 'e'}`;
 
   return (
     <>
       <Button onClick={toggle}>
-        {isNew ? 'New Game' : 'Create Game Room'}
+        {isExisting ? 'New Game' : 'Create Game Room'}
       </Button>
       <Modal
         isShowing={isShowing}
