@@ -36,7 +36,6 @@ const Login = () => {
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('message', nickNameError, nameInitialsError);
     if (!nickName) return setNickNameError('Nick Name is required');
     if (!nameInitials) return setNameInitialsError('Name Initials is required');
 

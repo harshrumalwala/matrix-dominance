@@ -23,6 +23,8 @@ export interface Room {
   playerTurn: number;
   message: string;
   matrixSize: number;
+  pendingInvite: Array<string>;
+  host: string;
 }
 
 export interface RoomOutput {
@@ -58,7 +60,21 @@ export interface ConnectDotsOutput {
 
 export interface CreateNewGameOutput {
   isCreatingNewGame: boolean;
-  createNewGame: (players: Array<string>, matrixSize: number) => void;
+  createNewGame: (
+    players: Array<string>,
+    host: string,
+    matrixSize: number
+  ) => void;
+}
+
+export interface JoinRoomOutput {
+  isJoiningRoom: boolean;
+  joinRoom: (
+    userId: string,
+    pendingInvite: Array<string>,
+    players?: Array<string>,
+    isAccepted?: boolean
+  ) => void;
 }
 
 export interface CountdownOutput {

@@ -13,7 +13,16 @@ const Modal: FC<{
   submitText: string;
   cancelText: string;
   submitAction: () => void;
-}> = ({ isShowing, hide, children, submitText, cancelText, submitAction }) =>
+  cancelAction: () => void;
+}> = ({
+  isShowing,
+  hide,
+  children,
+  submitText,
+  cancelText,
+  submitAction,
+  cancelAction,
+}) =>
   isShowing
     ? ReactDOM.createPortal(
         <>
@@ -22,7 +31,7 @@ const Modal: FC<{
               <ModalContent>
                 {children}
                 <ModalButton onClick={submitAction}>{submitText}</ModalButton>
-                <ModalButton onClick={hide}>{cancelText}</ModalButton>
+                <ModalButton onClick={cancelAction}>{cancelText}</ModalButton>
               </ModalContent>
             </ModalWrapper>
           </ModalOverlay>

@@ -152,7 +152,7 @@ export const getUpdatedBoardState = ({
   users,
 }: Room & { idx: number; users: { [key: string]: User } | undefined }): Omit<
   Room,
-  'players' | 'matrixSize' | 'message'
+  'players' | 'matrixSize' | 'message' | 'host' | 'pendingInvite'
 > => {
   let newEdges: { [key: number]: Array<number> } = _.merge({}, edges);
   let newSelectedDot: number = selectedDot;
@@ -216,16 +216,22 @@ export const enrichMatrix = (
     []
   );
 
-export const getNewGameState = (players: Array<string>, matrixSize: number) => {
+export const getNewGameState = (
+  players: Array<string>,
+  host: string,
+  matrixSize: number
+) => {
   const randomPlayerTurn = Math.floor(Math.random() * _.size(players));
 
   return {
     edges: {},
+    pendingInvite: [],
     matrix: Array((matrixSize - 1) * (matrixSize - 1)).fill(null),
     selectedDot: -1,
     playerTurn: randomPlayerTurn,
     players,
     matrixSize,
+    host,
   };
 };
 
@@ -252,3 +258,18 @@ export const enrichRoom = (
     message,
   } as Room;
 };
+
+export const updateRoomPlayers = (
+  userId: string,
+  pendingInvite: Array<string>,
+  players?: Array<string>,
+  isAccepted?: boolean
+): { pendingInvite: Array<string>; players?: Array<string> } =>
+  _.includes(pendingInvite, userId)
+    ? isAccepted!
+      ? {
+          players: [...players!, userId],
+          pendingInvite: _.remove(pendingInvite, (id) => id !== userId),
+        }
+      : { pendingInvite: _.remove(pendingInvite, (id) => id !== userId) }
+    : { pendingInvite: [...pendingInvite, userId] };

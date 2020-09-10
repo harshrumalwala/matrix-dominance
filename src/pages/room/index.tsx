@@ -2,7 +2,7 @@ import React from 'react';
 import LineTo from 'react-lineto';
 import _ from 'lodash';
 
-import { Header, NewGameModal } from 'components';
+import { Header, NewGameModal, RequestModal } from 'components';
 import { Container, Row, Dot, Cell, Grid } from './styles';
 import { useRoom, useDimensions, useConnectDots } from 'hooks';
 
@@ -12,11 +12,21 @@ const Room = () => {
 
   useDimensions();
 
-  if (isFetching || isFetchingUsers || _.isEmpty(users)) return <Header>Loading Room...</Header>;
-  
+  if (isFetching || isFetchingUsers || _.isEmpty(users))
+    return <Header>Loading Room...</Header>;
+
   if (!room) return <Header>Room Not Found</Header>;
 
-  const { selectedDot, edges, matrix, message, matrixSize, players } = room;
+  const {
+    selectedDot,
+    edges,
+    matrix,
+    message,
+    matrixSize,
+    players,
+    host,
+    pendingInvite,
+  } = room;
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
@@ -71,6 +81,11 @@ const Room = () => {
         )}
       </Grid>
       <NewGameModal isExisting={true} players={players} />
+      <RequestModal
+        host={host}
+        pendingInvite={pendingInvite}
+        players={players}
+      />
     </Container>
   );
 };

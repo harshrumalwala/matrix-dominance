@@ -3,10 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { Modal, Field, Button } from 'components';
 import { useModal, useCreateNewGame, useCurrentUser } from 'hooks';
 
-const NewGameModal: FC<{ isExisting: boolean; players?: Array<string> }> = ({
-  isExisting,
-  players,
-}) => {
+const NewGameModal: FC<{
+  isExisting: boolean;
+  players?: Array<string>;
+  host?: string;
+}> = ({ isExisting, players, host }) => {
   const history = useHistory();
   const { isShowing, toggle } = useModal();
   const [matrixSize, setMatrixSize] = useState<number | undefined>(undefined);
@@ -16,14 +17,14 @@ const NewGameModal: FC<{ isExisting: boolean; players?: Array<string> }> = ({
   const submitAction = async () => {
     if (matrixSize) {
       toggle();
-      if (isExisting && players) {
-        createNewGame(players, parseInt(matrixSize.toString()));
+      if (isExisting && players && host) {
+        createNewGame(players, host, parseInt(matrixSize.toString()));
       } else if (currentUser) {
         const roomId = await createNewGame(
           [currentUser.uid],
+          currentUser.uid,
           parseInt(matrixSize.toString())
         );
-        console.log('changing history');
         history.push(`/room/${roomId}`);
       }
     }
@@ -45,6 +46,7 @@ const NewGameModal: FC<{ isExisting: boolean; players?: Array<string> }> = ({
         submitText={getSubmitText()}
         cancelText="Cancel"
         submitAction={submitAction}
+        cancelAction={toggle}
       >
         <Field
           id="matrixSize"
