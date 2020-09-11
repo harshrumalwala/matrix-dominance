@@ -13,6 +13,11 @@ const Home = () => {
     history.push('/login');
   };
 
+  const handleActiveRooms = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/roomList');
+  };
+
   const handleProfile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     history.push(`/profile/${currentUser?.uid}`);
@@ -24,6 +29,7 @@ const Home = () => {
       {currentUser ? (
         <>
           <NewGameModal isExisting={false} />
+          <Button onClick={handleActiveRooms}>Join Game Room</Button>
           <Button onClick={handleProfile}>Profile</Button>
           <Logout />
         </>

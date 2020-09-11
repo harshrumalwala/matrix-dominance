@@ -1,14 +1,17 @@
 import React from 'react';
 import LineTo from 'react-lineto';
 import _ from 'lodash';
+import { useHistory } from 'react-router-dom';
 
-import { Header, NewGameModal, RequestModal } from 'components';
+import { Header, NewGameModal, RequestModal, Button } from 'components';
 import { Container, Row, Dot, Cell, Grid } from './styles';
-import { useRoom, useDimensions, useConnectDots } from 'hooks';
+import { useRoom, useDimensions, useConnectDots, useCurrentUser } from 'hooks';
 
 const Room = () => {
+  const history = useHistory();
   const { isFetching, isFetchingUsers, room, users } = useRoom();
   const { isConnectingDots, connectDots } = useConnectDots();
+  const currentUser = useCurrentUser();
 
   useDimensions();
 
@@ -36,6 +39,11 @@ const Room = () => {
   const getDotId = (x: number, y: number): number => (x / 2) * matrixSize + y;
   const getCellId = (x: number, y: number): number =>
     ((x - 1) / 2) * (matrixSize - 1) + y;
+
+  const handleHomeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/');
+  };
 
   return (
     <Container>
@@ -77,15 +85,18 @@ const Room = () => {
               to={`dot_${k}`}
               delay={0}
             />
-          ))
+          )),
         )}
       </Grid>
-      <NewGameModal isExisting={true} players={players} />
       <RequestModal
         host={host}
         pendingInvite={pendingInvite}
         players={players}
       />
+      {currentUser?.uid === host && (
+        <NewGameModal isExisting={true} players={players} />
+      )}
+      <Button onClick={handleHomeClick}>Home</Button>
     </Container>
   );
 };

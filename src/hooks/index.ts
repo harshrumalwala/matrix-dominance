@@ -8,3 +8,4 @@ export { useCurrentUser, CurrentUserProvider } from './use-current-user';
 export { default as useUsers } from './use-user';
 export { default as useModal } from './use-modal';
 export { default as useJoinRoom } from './use-join-room';
+export { default as useGetRooms } from './use-get-rooms';

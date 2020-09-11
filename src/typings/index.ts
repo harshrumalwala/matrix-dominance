@@ -94,3 +94,13 @@ export interface FieldProps {
   errorMessage?: string | undefined;
   disabled?: boolean;
 }
+
+export interface RoomListItem {
+  roomId: string;
+  host: string;
+}
+
+export interface RoomListOutput {
+  isFetchingRooms: boolean;
+  rooms: Array<RoomListItem>;
+}
