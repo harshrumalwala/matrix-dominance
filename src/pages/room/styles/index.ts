@@ -1,5 +1,6 @@
 import { CellProps, DotProps, GridProps } from '../../../typings/index';
 import styled, { css } from 'styled-components';
+import { Button } from 'components';
 
 export const Container = styled.div`
   display: flex;
@@ -43,4 +44,13 @@ export const Grid = styled.div<GridProps>`
       ? theme.colors.lightBlue
       : theme.colors.white};
   `}
+`;
+
+export const CloseButton = styled(Button)`
+  width: 20%;
+  float: right;
+`;
+
+export const PlayerListItem = styled.div`
+  float: left;
 `;

@@ -49,7 +49,7 @@ const Login = () => {
             .doc(response.user.uid)
             .set({
               nickName,
-              nameInitials,
+              nameInitials: _.toUpper(nameInitials),
             })
             .catch((error) => {
               throw new Error(error.message);

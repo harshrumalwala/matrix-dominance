@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const List = styled.ul`
   width: 100%;
-  margin: auto;
+  /* margin: auto; */
   padding-left: 4px;
 `;
 

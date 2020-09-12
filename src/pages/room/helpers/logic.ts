@@ -258,7 +258,7 @@ export const enrichRoom = (
   );
   const message = isMatrixComplete(room.matrix)
     ? getWinner(room.matrix, users)
-    : `${users[room.players[room.playerTurn]].nameInitials}'s turn`;
+    : `${users[room.players[room.playerTurn]].nickName}'s turn`;
   return {
     ...room,
     matrix,

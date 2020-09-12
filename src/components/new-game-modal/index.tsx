@@ -1,4 +1,5 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
+import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { Modal, Field, Button } from 'components';
 import { useModal, useCreateNewGame, useCurrentUser } from 'hooks';
@@ -11,11 +12,24 @@ const NewGameModal: FC<{
   const history = useHistory();
   const { isShowing, toggle } = useModal();
   const [matrixSize, setMatrixSize] = useState<number | undefined>(undefined);
+  const [matrixSizeError, setMatrixSizeError] = useState<string>(
+    ''
+  );
   const { isCreatingNewGame, createNewGame } = useCreateNewGame(isExisting);
   const currentUser = useCurrentUser();
+  
+  useEffect(() => {
+    setMatrixSizeError('');
+  }, [matrixSize]);  
+
+  useEffect(() => {
+    matrixSize &&
+    parseInt(matrixSize.toString()) < 2 &&
+      setMatrixSizeError('Board size should be greater than 2');
+  }, [matrixSize]);
 
   const submitAction = async () => {
-    if (matrixSize) {
+    if (matrixSize && _.isEmpty(matrixSizeError)) {
       toggle();
       if (isExisting && players && host) {
         createNewGame(players, host, parseInt(matrixSize.toString()));
@@ -23,7 +37,7 @@ const NewGameModal: FC<{
         const roomId = await createNewGame(
           [currentUser.uid],
           currentUser.uid,
-          parseInt(matrixSize.toString())
+          parseInt(matrixSize.toString()),
         );
         history.push(`/room/${roomId}`);
       }
@@ -56,6 +70,7 @@ const NewGameModal: FC<{
           type="number"
           value={matrixSize ?? ''}
           key="matrixSize"
+          errorMessage={matrixSizeError}
         />
       </Modal>
     </>

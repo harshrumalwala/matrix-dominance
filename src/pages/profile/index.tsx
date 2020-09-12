@@ -15,14 +15,14 @@ const Profile: FC = () => {
   const history = useHistory();
 
   const [nickName, setNickName] = useState<string | undefined>(
-    user?.nickName ?? ''
+    user?.nickName ?? '',
   );
   const [nickNameError, setNickNameError] = useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const [nameInitials, setNameInitials] = useState<string | undefined>(
-    user?.nameInitials ?? ''
+    user?.nameInitials ?? '',
   );
   const [nameInitialsError, setNameInitialsError] = useState<
     string | undefined
@@ -58,7 +58,7 @@ const Profile: FC = () => {
         .doc(userId)
         .set({
           nickName,
-          nameInitials,
+          nameInitials: _.toUpper(nameInitials),
         })
         .then(() => setIsUpdating(false))
         .catch((error) => {

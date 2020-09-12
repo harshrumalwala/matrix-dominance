@@ -20,6 +20,7 @@ const RequestModal: FC<{
       currentUser?.uid === host &&
       !isShowing &&
       !isFetching &&
+      !isJoiningRoom &&
       toggle();
   });
 
@@ -53,8 +54,8 @@ const RequestModal: FC<{
           cancelAction={rejectAction}
         >
           <RequestModalBody>
-            Gamer: <strong>{users?.[_.first(pendingInvite)!]?.nickName}</strong>(
-            <strong>{users?.[_.first(pendingInvite)!]?.nameInitials}</strong>)
+            Gamer: <strong>{users?.[_.first(pendingInvite)!]?.nickName}</strong>
+            (<strong>{users?.[_.first(pendingInvite)!]?.nameInitials}</strong>)
             wants to join your room
           </RequestModalBody>
         </Modal>

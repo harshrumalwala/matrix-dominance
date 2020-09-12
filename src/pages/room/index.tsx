@@ -11,7 +11,15 @@ import {
   List,
   Item,
 } from 'components';
-import { Container, Row, Dot, Cell, Grid } from './styles';
+import {
+  Container,
+  Row,
+  Dot,
+  Cell,
+  Grid,
+  CloseButton,
+  PlayerListItem,
+} from './styles';
 import { useRoom, useDimensions, useConnectDots, useCurrentUser } from 'hooks';
 
 const Room = () => {
@@ -38,6 +46,8 @@ const Room = () => {
     pendingInvite,
     playerTurn,
   } = room;
+
+  const matrixCount: { [key: string]: number } = _.countBy(matrix);
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
@@ -97,14 +107,23 @@ const Room = () => {
         )}
       </Grid>
       <List>
-        {_.map(players, (player: string, index: number) => (
-          <Item
-            key={`player-${index}`}
-            isSelected={player === players?.[playerTurn]}
-          >
-            {users?.[player].nickName} ({users?.[player]?.nameInitials})
-          </Item>
-        ))}
+        {_.map(
+          players,
+          (player: string, index: number) =>
+            users?.[player] && (
+              <Item
+                key={`player-${index}`}
+                isSelected={player === players?.[playerTurn]}
+              >
+                <>
+                  <div>
+                    {users[player].nickName} ({users[player].nameInitials}) -{' '}
+                    {matrixCount?.[users[player].nameInitials] ?? 0}
+                  </div>
+                </>
+              </Item>
+            ),
+        )}
       </List>
       <RequestModal
         host={host}
@@ -112,7 +131,7 @@ const Room = () => {
         players={players}
       />
       {currentUser?.uid === host && (
-        <NewGameModal isExisting={true} players={players} />
+        <NewGameModal isExisting={true} players={players} host={host} />
       )}
       <Button onClick={handleHomeClick}>Home</Button>
     </Container>
