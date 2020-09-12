@@ -21,10 +21,12 @@ const Room = () => {
 
   useDimensions();
 
-  if (isFetching || isFetchingUsers || _.isEmpty(users))
-    return <Header>Loading Room...</Header>;
+  if (isFetching) return <Header>Loading Room...</Header>;
 
   if (!room) return <Header>Room Not Found</Header>;
+
+  if (isFetchingUsers || _.isEmpty(users))
+    return <Header>Fetching Users...</Header>;
 
   const {
     selectedDot,

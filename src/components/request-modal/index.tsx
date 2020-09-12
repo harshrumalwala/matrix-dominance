@@ -16,7 +16,7 @@ const RequestModal: FC<{
   const { isFetching, users } = useUsers(pendingInvite);
 
   useEffect(() => {
-    !_.isEmpty(pendingInvite) &&
+    _.size(pendingInvite) > 0 &&
       currentUser?.uid === host &&
       !isShowing &&
       !isFetching &&

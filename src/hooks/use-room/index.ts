@@ -27,7 +27,7 @@ const useRoom = (): RoomOutput => {
         if (doc.exists) {
           setRoom(enrichRoom(doc.data() as Room, users));
           setFireBaseRoom(doc.data() as Room);
-        } else console.log('Room not found');
+        }
         setIsFetching(false);
       });
 
