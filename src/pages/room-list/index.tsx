@@ -32,16 +32,20 @@ const RoomList = () => {
   return (
     <>
       <Header>Active Rooms (Host)</Header>
-      <List>
-        {_.map(rooms, (room: RoomListItem, index: number) => (
-          <Item
-            key={`room-${index}`}
-            onClick={(e) => handleClick(e, room.roomId)}
-          >
-            {room.roomId} ({users?.[room.host]?.nickName ?? room.host})
-          </Item>
-        ))}
-      </List>
+      {_.size(rooms) > 0 ? (
+        <List>
+          {_.map(rooms, (room: RoomListItem, index: number) => (
+            <Item
+              key={`room-${index}`}
+              onClick={(e) => handleClick(e, room.roomId)}
+            >
+              {room.roomId} ({users?.[room.host]?.nickName ?? room.host})
+            </Item>
+          ))}
+        </List>
+      ) : (
+        <p>No active room found, please create a new game</p>
+      )}
       <Button onClick={handleHomeClick}>Home</Button>
     </>
   );

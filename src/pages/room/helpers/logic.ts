@@ -4,7 +4,7 @@ import { Room, User } from 'typings';
 
 export const isCompleteCell = (
   arr: Array<number>,
-  edges: { [key: number]: Array<number> }
+  edges: { [key: number]: Array<number> },
 ): boolean => {
   arr.sort((a, b) => a - b);
   return (
@@ -15,16 +15,16 @@ export const isCompleteCell = (
 
 export const getWinner = (
   matrix: Array<string | null>,
-  users: { [key: string]: User } | undefined
+  users: { [key: string]: User } | undefined,
 ): string => {
   const playersCellCount: { [key: string]: number } = _.countBy(matrix);
   const numberOfWinners: { [key: number]: number } = _.countBy(
-    playersCellCount
+    playersCellCount,
   );
 
   const winner: string = _.maxBy(
     Object.keys(playersCellCount),
-    (o) => playersCellCount[o]
+    (o) => playersCellCount[o],
   ) as string;
 
   return numberOfWinners[playersCellCount[winner]] === 1
@@ -35,7 +35,7 @@ export const getWinner = (
 export const getMatrixIndexIfCompleteCell = (
   arr: Array<number>,
   edges: { [key: number]: Array<number> },
-  matrixSize: number
+  matrixSize: number,
 ): number => {
   if (isCompleteCell(arr, edges)) {
     const minIdx: number = Math.min(...arr);
@@ -49,7 +49,7 @@ export const getUnassignedAndCompletedVerticalCells = (
   point2: number,
   edges: { [key: number]: Array<number> },
   matrix: Array<string | null>,
-  matrixSize: number
+  matrixSize: number,
 ): Array<number> => {
   let unassignedAndCompletedMatrixIdxes: Array<number> = [],
     topCell: Array<number>,
@@ -59,7 +59,7 @@ export const getUnassignedAndCompletedVerticalCells = (
     const topIdx: number = getMatrixIndexIfCompleteCell(
       topCell,
       edges,
-      matrixSize
+      matrixSize,
     );
     if (topIdx !== -1 && _.isNil(matrix[topIdx]))
       unassignedAndCompletedMatrixIdxes.push(topIdx);
@@ -69,7 +69,7 @@ export const getUnassignedAndCompletedVerticalCells = (
     const bottomIdx: number = getMatrixIndexIfCompleteCell(
       bottomCell,
       edges,
-      matrixSize
+      matrixSize,
     );
     if (bottomIdx !== -1 && _.isNil(matrix[bottomIdx]))
       unassignedAndCompletedMatrixIdxes.push(bottomIdx);
@@ -82,7 +82,7 @@ export const getUnassignedAndCompletedHorizontalCells = (
   point2: number,
   edges: { [key: number]: Array<number> },
   matrix: Array<string | null>,
-  matrixSize: number
+  matrixSize: number,
 ): Array<number> => {
   let unassignedAndCompletedMatrixIdxes: Array<number> = [],
     leftCell: Array<number>,
@@ -94,7 +94,7 @@ export const getUnassignedAndCompletedHorizontalCells = (
     const leftIdx: number = getMatrixIndexIfCompleteCell(
       leftCell,
       edges,
-      matrixSize
+      matrixSize,
     );
     if (leftIdx !== -1 && _.isNil(matrix[leftIdx]))
       unassignedAndCompletedMatrixIdxes.push(leftIdx);
@@ -106,7 +106,7 @@ export const getUnassignedAndCompletedHorizontalCells = (
     const rightIdx: number = getMatrixIndexIfCompleteCell(
       rightCell,
       edges,
-      matrixSize
+      matrixSize,
     );
     if (rightIdx !== -1 && _.isNil(matrix[rightIdx]))
       unassignedAndCompletedMatrixIdxes.push(rightIdx);
@@ -119,7 +119,7 @@ export const getUnassignedAndCompletedCells = (
   point2: number,
   edges: { [key: number]: Array<number> },
   matrix: Array<string | null>,
-  matrixSize: number
+  matrixSize: number,
 ): Array<number> => {
   return isHorizontalLine(point1, point2)
     ? getUnassignedAndCompletedVerticalCells(
@@ -127,14 +127,14 @@ export const getUnassignedAndCompletedCells = (
         point2,
         edges,
         matrix,
-        matrixSize
+        matrixSize,
       )
     : getUnassignedAndCompletedHorizontalCells(
         point1,
         point2,
         edges,
         matrix,
-        matrixSize
+        matrixSize,
       );
 };
 
@@ -168,7 +168,7 @@ export const getUpdatedBoardState = ({
         selectedDot + matrixSize,
         selectedDot - matrixSize,
       ],
-      idx
+      idx,
     ) &&
     !_.includes(edges[selectedDot], idx)
   ) {
@@ -180,7 +180,7 @@ export const getUpdatedBoardState = ({
       idx,
       edges,
       matrix,
-      matrixSize
+      matrixSize,
     );
     _.forEach(matrixIdxToBeUpdated, (o) => {
       newMatrix[o] = players[playerTurn];
@@ -196,33 +196,39 @@ export const getUpdatedBoardState = ({
     matrix: newMatrix,
     playerTurn: newPlayerTurn,
     selectedDot: newSelectedDot,
+    lastUpdatedTime: getCurrentUTCTime(),
   };
 };
 
 export const enrichMatrix = (
   matrix: Array<string | null>,
-  users: { [key: string]: User } | undefined
+  users: { [key: string]: User } | undefined,
 ): Array<string | null> =>
   _.reduce(
     matrix,
     (acc: Array<string | null>, v: string | null) => {
       v
         ? acc.push(
-            _.chain(users).pickBy(['nameInitials', v]).keys().first().value()
+            _.chain(users).pickBy(['nameInitials', v]).keys().first().value(),
           )
         : acc.push(null);
       return acc;
     },
-    []
+    [],
   );
+
+export const getCurrentUTCTime = (): number => {
+  const now = new Date();
+  now.toUTCString();
+  return Math.floor(now.getTime() / 1000);
+};
 
 export const getNewGameState = (
   players: Array<string>,
   host: string,
-  matrixSize: number
+  matrixSize: number,
 ) => {
   const randomPlayerTurn = Math.floor(Math.random() * _.size(players));
-
   return {
     edges: {},
     pendingInvite: [],
@@ -232,12 +238,13 @@ export const getNewGameState = (
     players,
     matrixSize,
     host,
+    lastUpdatedTime: getCurrentUTCTime(),
   };
 };
 
 export const enrichRoom = (
   room: Room,
-  users: { [key: string]: User } | undefined
+  users: { [key: string]: User } | undefined,
 ): Room => {
   if (!users || _.isEmpty(users)) return room;
 
@@ -247,7 +254,7 @@ export const enrichRoom = (
       v ? acc.push(users[v].nameInitials) : acc.push(null);
       return acc;
     },
-    []
+    [],
   );
   const message = isMatrixComplete(room.matrix)
     ? getWinner(room.matrix, users)
@@ -263,7 +270,7 @@ export const updateRoomPlayers = (
   userId: string,
   pendingInvite: Array<string>,
   players?: Array<string>,
-  isAccepted?: boolean
+  isAccepted?: boolean,
 ): { pendingInvite: Array<string>; players?: Array<string> } =>
   _.includes(pendingInvite, userId)
     ? isAccepted!

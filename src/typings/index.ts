@@ -25,6 +25,7 @@ export interface Room {
   matrixSize: number;
   pendingInvite: Array<string>;
   host: string;
+  lastUpdatedTime: number;
 }
 
 export interface RoomOutput {
