@@ -3,7 +3,14 @@ import LineTo from 'react-lineto';
 import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 
-import { Header, NewGameModal, RequestModal, Button } from 'components';
+import {
+  Header,
+  NewGameModal,
+  RequestModal,
+  Button,
+  List,
+  Item,
+} from 'components';
 import { Container, Row, Dot, Cell, Grid } from './styles';
 import { useRoom, useDimensions, useConnectDots, useCurrentUser } from 'hooks';
 
@@ -29,11 +36,12 @@ const Room = () => {
     players,
     host,
     pendingInvite,
+    playerTurn,
   } = room;
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>, idx: number) => {
     e.preventDefault();
-    connectDots(idx, room, users);
+    currentUser?.uid === players[playerTurn] && connectDots(idx, room, users);
   };
 
   const getDotId = (x: number, y: number): number => (x / 2) * matrixSize + y;
@@ -88,6 +96,16 @@ const Room = () => {
           )),
         )}
       </Grid>
+      <List>
+        {_.map(players, (player: string, index: number) => (
+          <Item
+            key={`player-${index}`}
+            isSelected={player === players?.[playerTurn]}
+          >
+            {users?.[player].nickName} ({users?.[player]?.nameInitials})
+          </Item>
+        ))}
+      </List>
       <RequestModal
         host={host}
         pendingInvite={pendingInvite}

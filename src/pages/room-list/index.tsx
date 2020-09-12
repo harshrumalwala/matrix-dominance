@@ -3,9 +3,8 @@ import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 
 import { RoomListItem } from 'typings';
-import { List, Item } from './styles';
 import { useGetRooms, useUsers } from 'hooks';
-import { Header, Button } from 'components';
+import { Header, Button, List, Item } from 'components';
 
 const RoomList = () => {
   const history = useHistory();
