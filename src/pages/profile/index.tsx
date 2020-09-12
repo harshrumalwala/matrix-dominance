@@ -48,6 +48,8 @@ const Profile: FC = () => {
 
   if (isFetching) return <Header>Loading Profile</Header>;
 
+  if (!user) return <Header>Player Not Found</Header>;
+
   const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!nickName) return setNickNameError('Nick Name is required');
@@ -70,7 +72,7 @@ const Profile: FC = () => {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    history.push('/');
+    history.goBack();
   };
 
   return (
@@ -102,7 +104,7 @@ const Profile: FC = () => {
       >
         Updat{isUpdating ? 'ing' : 'e'}
       </Button>
-      <Button onClick={handleClick}>Home</Button>
+      <Button onClick={handleClick}>Back</Button>
     </>
   );
 };

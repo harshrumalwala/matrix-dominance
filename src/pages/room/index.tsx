@@ -8,18 +8,9 @@ import {
   NewGameModal,
   RequestModal,
   Button,
-  List,
-  Item,
+  PlayerListModal,
 } from 'components';
-import {
-  Container,
-  Row,
-  Dot,
-  Cell,
-  Grid,
-  CloseButton,
-  PlayerListItem,
-} from './styles';
+import { Container, Row, Dot, Cell, Grid } from './styles';
 import { useRoom, useDimensions, useConnectDots, useCurrentUser } from 'hooks';
 
 const Room = () => {
@@ -106,25 +97,15 @@ const Room = () => {
           )),
         )}
       </Grid>
-      <List>
-        {_.map(
-          players,
-          (player: string, index: number) =>
-            users?.[player] && (
-              <Item
-                key={`player-${index}`}
-                isSelected={player === players?.[playerTurn]}
-              >
-                <>
-                  <div>
-                    {users[player].nickName} ({users[player].nameInitials}) -{' '}
-                    {matrixCount?.[users[player].nameInitials] ?? 0}
-                  </div>
-                </>
-              </Item>
-            ),
-        )}
-      </List>
+      <PlayerListModal
+        players={players}
+        host={host}
+        matrixSize={matrixSize}
+        matrixCount={matrixCount}
+        currentUser={currentUser}
+        users={users}
+        playerTurn={playerTurn}
+      />
       <RequestModal
         host={host}
         pendingInvite={pendingInvite}

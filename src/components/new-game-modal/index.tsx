@@ -24,8 +24,8 @@ const NewGameModal: FC<{
 
   useEffect(() => {
     matrixSize &&
-    parseInt(matrixSize.toString()) < 2 &&
-      setMatrixSizeError('Board size should be greater than 2');
+    (parseInt(matrixSize.toString()) < 3 || parseInt(matrixSize.toString()) > 10) &&
+      setMatrixSizeError('Board size should be in between 3 and 10');
   }, [matrixSize]);
 
   const submitAction = async () => {

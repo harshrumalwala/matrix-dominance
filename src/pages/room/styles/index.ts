@@ -1,6 +1,5 @@
 import { CellProps, DotProps, GridProps } from '../../../typings/index';
 import styled, { css } from 'styled-components';
-import { Button } from 'components';
 
 export const Container = styled.div`
   display: flex;
@@ -37,20 +36,11 @@ export const Cell = styled.div<CellProps>`
 
 export const Grid = styled.div<GridProps>`
   ${({ theme, isConnectingDots }) => css`
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 10px;
     border: 2px solid ${theme.colors.black};
     background-color: ${isConnectingDots
       ? theme.colors.lightBlue
       : theme.colors.white};
   `}
-`;
-
-export const CloseButton = styled(Button)`
-  width: 20%;
-  float: right;
-`;
-
-export const PlayerListItem = styled.div`
-  float: left;
 `;

@@ -43,7 +43,7 @@ const RequestModal: FC<{
 
   return (
     <>
-      {!isPlayerInQueue() && <Button onClick={sendRequest}>Join Room</Button>}
+      {!isPlayerInQueue() && <Button onClick={sendRequest}>Join Game</Button>}
       {!isJoiningRoom && (
         <Modal
           isShowing={isShowing}
