@@ -23,7 +23,18 @@ const Room = () => {
 
   if (isFetching) return <Header>Loading Room...</Header>;
 
-  if (!room) return <Header>Room Not Found</Header>;
+  const handleHomeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/');
+  };
+
+  if (!room)
+    return (
+      <>
+        <Header>Room Not Found</Header>
+        <Button onClick={handleHomeClick}>Home</Button>
+      </>
+    );
 
   if (isFetchingUsers || _.isEmpty(users))
     return <Header>Fetching Users...</Header>;
@@ -50,11 +61,6 @@ const Room = () => {
   const getDotId = (x: number, y: number): number => (x / 2) * matrixSize + y;
   const getCellId = (x: number, y: number): number =>
     ((x - 1) / 2) * (matrixSize - 1) + y;
-
-  const handleHomeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    history.push('/');
-  };
 
   return (
     <Container>
@@ -109,6 +115,7 @@ const Room = () => {
         playerTurn={playerTurn}
       />
       <RequestModal
+        isGameInProgress={_.chain(matrix).countBy().size().value() !== 1}
         host={host}
         pendingInvite={pendingInvite}
         players={players}

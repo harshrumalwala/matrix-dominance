@@ -9,7 +9,7 @@ const useUsers = (userIds: Array<string> | undefined): UsersOutput => {
 
   useEffect(() => {
     const unsubscribe = db.collection('users').onSnapshot((querySnapshot) => {
-      let userList: { [key: string]: User } = {};
+      let userList: { [key: string]: User } | undefined = undefined;
       querySnapshot.forEach((doc) => {
         if (_.includes(userIds, doc.id))
           userList = _.merge(userList, { [doc.id]: doc.data() as User });
@@ -24,7 +24,7 @@ const useUsers = (userIds: Array<string> | undefined): UsersOutput => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(userIds)]);
- 
+
   return { isFetching, users };
 };
 

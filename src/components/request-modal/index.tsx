@@ -9,23 +9,29 @@ const RequestModal: FC<{
   host: string;
   pendingInvite: Array<string>;
   players: Array<string>;
-}> = ({ host, pendingInvite, players }) => {
+  isGameInProgress: boolean;
+}> = ({ host, pendingInvite, players, isGameInProgress }) => {
   const { isShowing, toggle } = useModal();
   const { isJoiningRoom, joinRoom } = useJoinRoom();
   const { currentUser } = useCurrentUser();
   const { isFetching, users } = useUsers(pendingInvite);
 
   useEffect(() => {
-    _.size(pendingInvite) > 0 &&
-      currentUser?.uid === host &&
-      !isShowing &&
-      !isFetching &&
-      !isJoiningRoom &&
+    if (
+      (_.size(pendingInvite) > 0 &&
+        currentUser?.uid === host &&
+        !isShowing &&
+        !isFetching &&
+        !isJoiningRoom) ||
+      (_.isEmpty(pendingInvite) && isShowing)
+    )
       toggle();
   });
 
   const sendRequest = () =>
-    currentUser?.uid && joinRoom(currentUser?.uid, pendingInvite);
+    !isPlayerInQueue() &&
+    currentUser?.uid &&
+    joinRoom(currentUser?.uid, pendingInvite);
 
   const submitAction = async () => {
     await joinRoom(_.first(pendingInvite)!, pendingInvite, players, true);
@@ -37,13 +43,21 @@ const RequestModal: FC<{
   };
 
   const isPlayerInQueue = () =>
-    currentUser?.uid &&
-    (_.includes(pendingInvite, currentUser?.uid) ||
-      _.includes(players, currentUser?.uid));
+    currentUser?.uid && _.includes(pendingInvite, currentUser?.uid);
 
+  const isPlayerInGame = () =>
+    currentUser?.uid && _.includes(players, currentUser?.uid);
+  
   return (
     <>
-      {!isPlayerInQueue() && <Button onClick={sendRequest}>Join Game</Button>}
+      {!isPlayerInGame() &&
+        (isGameInProgress ? (
+          <div>Game in progress...</div>
+        ) : (
+          <Button onClick={sendRequest}>
+            {!isPlayerInQueue() ? 'Join Game' : 'Request Sent'}
+          </Button>
+        ))}
       {!isJoiningRoom && (
         <Modal
           isShowing={isShowing}

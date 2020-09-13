@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, useState } from 'react';
+import React, { FC, MouseEvent, useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 
@@ -37,6 +37,24 @@ const PlayerListModal: FC<{
   );
 
   const { isCreatingNewGame, createNewGame } = useCreateNewGame(true);
+
+  useEffect(() => {
+    let mounted = true;
+    if (users && players) {
+      const newPlayers = _.filter(
+        players,
+        (player) => !_.isNil(users?.[player]),
+      );
+      mounted &&
+        _.size(players) !== _.size(newPlayers) &&
+        createNewGame(newPlayers, host, matrixSize);
+    }
+
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(users)]);
 
   const submitAction = async () => {
     toggle();

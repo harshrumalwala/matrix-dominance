@@ -38,7 +38,7 @@ const RoomList = () => {
               key={`room-${index}`}
               onClick={(e) => handleClick(e, room.roomId)}
             >
-              {room.roomId} ({users?.[room.host]?.nickName ?? room.host})
+              {room.roomId} ({users?.[room.host]?.nickName ?? '...'})
             </Item>
           ))}
         </List>
