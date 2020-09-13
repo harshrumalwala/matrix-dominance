@@ -8,8 +8,7 @@ const Home = () => {
   const history = useHistory();
   const { currentUser, isLoading } = useCurrentUser();
 
-  if(isLoading)
-    return <Header>Loading...</Header>
+  if (isLoading) return <Header>Loading...</Header>;
 
   const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -21,6 +20,11 @@ const Home = () => {
     history.push('/roomList');
   };
 
+  const handleHowToPlay = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    history.push('/howToPlay');
+  };
+
   const handleProfile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     history.push(`/profile/${currentUser?.uid}`);
@@ -29,6 +33,7 @@ const Home = () => {
   return (
     <div>
       <Header>Home</Header>
+      <Button onClick={handleHowToPlay}>How To Play</Button>
       {currentUser ? (
         <>
           <NewGameModal isExisting={false} />

@@ -36,6 +36,7 @@ const RoomList = () => {
           {_.map(rooms, (room: RoomListItem, index: number) => (
             <Item
               key={`room-${index}`}
+              isBullet={true}
               onClick={(e) => handleClick(e, room.roomId)}
             >
               {room.roomId} ({users?.[room.host]?.nickName ?? '...'})

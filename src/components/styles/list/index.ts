@@ -6,11 +6,10 @@ export const List = styled.ul`
   padding-left: 4px;
 `;
 
-export const Item = styled.li<{ isSelected?: boolean }>`
-  ${({ theme, isSelected }) => css`
-    display: block;
+export const Item = styled.li<{ isSelected?: boolean; isBullet?: boolean }>`
+  ${({ theme, isSelected, isBullet }) => css`
     border-top: 1px solid ${theme.colors.black};
-    list-style-type: none;
+    list-style-type: ${isBullet ? 'circle' : 'none'};
     padding: 5px 5px;
     background-color: ${isSelected
       ? theme.colors.lightBlue
