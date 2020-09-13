@@ -40,6 +40,7 @@ const NewGameModal: FC<{
         );
         history.push(`/room/${roomId}`);
       }
+      setMatrixSize(undefined);
     }
   };
 

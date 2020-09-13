@@ -12,11 +12,11 @@ const useCreateNewGame = (isExisting: boolean): CreateNewGameOutput => {
   const createNewGame = async (
     players: Array<string>,
     host: string,
-    matrixSize: number
+    matrixSize: number,
   ) => {
     setIsCreatingNewGame(true);
     try {
-      return isExisting
+      isExisting
         ? await db
             .collection('rooms')
             .doc(roomId)
@@ -25,10 +25,10 @@ const useCreateNewGame = (isExisting: boolean): CreateNewGameOutput => {
             .collection('rooms')
             .add(getNewGameState(players, host, matrixSize))
             .then((doc) => doc.id);
+      setIsCreatingNewGame(false);
     } catch (error) {
       console.error('Error while updating the board');
     }
-    setIsCreatingNewGame(false);
   };
 
   return { isCreatingNewGame, createNewGame };
