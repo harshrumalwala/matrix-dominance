@@ -12,7 +12,7 @@ const RequestModal: FC<{
 }> = ({ host, pendingInvite, players }) => {
   const { isShowing, toggle } = useModal();
   const { isJoiningRoom, joinRoom } = useJoinRoom();
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const { isFetching, users } = useUsers(pendingInvite);
 
   useEffect(() => {

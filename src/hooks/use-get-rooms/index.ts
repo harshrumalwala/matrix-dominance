@@ -25,7 +25,7 @@ const useGetRooms = (): RoomListOutput => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rooms]);
+  }, [JSON.stringify(rooms)]);
 
   return { isFetchingRooms, rooms };
 };

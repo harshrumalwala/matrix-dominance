@@ -24,7 +24,7 @@ const useUsers = (userIds: Array<string> | undefined): UsersOutput => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(userIds)]);
-
+ 
   return { isFetching, users };
 };
 

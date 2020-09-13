@@ -2,14 +2,28 @@ import React, { FC, useState, createContext, useContext } from 'react';
 
 import { auth } from 'services';
 
-const CurrentUserContext = createContext<firebase.User | null>(null);
+const INITIAL_STATE = {
+  currentUser: null,
+  isLoading: true,
+};
+
+const CurrentUserContext = createContext<{
+  currentUser: firebase.User | null;
+  isLoading: boolean;
+}>(INITIAL_STATE);
 
 export const CurrentUserProvider: FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
-  auth.onAuthStateChanged(setCurrentUser);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  auth.onAuthStateChanged((user) => {
+    user ? setCurrentUser(user) : setCurrentUser(null);
+    setIsLoading(false);
+  });
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
+    <CurrentUserContext.Provider
+      value={{ currentUser: currentUser, isLoading: isLoading }}
+    >
       {children}
     </CurrentUserContext.Provider>
   );

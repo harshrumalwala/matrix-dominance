@@ -5,7 +5,7 @@ import { auth, db } from 'services';
 import { useCurrentUser } from 'hooks';
 
 const Logout: FC = () => {
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [firebaseError, setFirebaseError] = useState<string>('');
@@ -28,6 +28,19 @@ const Logout: FC = () => {
       .then(() => console.log('User successfully deleted'))
       .catch((error) => {
         throw new Error(error.message);
+      });
+
+    db.collection('rooms')
+      .where('host', '==', currentUser?.uid)
+      .onSnapshot((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+          console.log(
+            `Room - ${doc.id} with host - ${
+              doc.data().host
+            } successfully deleted`,
+          );
+        });
       });
   };
 

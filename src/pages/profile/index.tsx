@@ -11,7 +11,7 @@ const Profile: FC = () => {
   const { userId }: { userId: string } = useParams();
   const { isFetching, users } = useUsers([userId]);
   const user: User | undefined = users?.[userId];
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const history = useHistory();
 
   const [nickName, setNickName] = useState<string | undefined>(

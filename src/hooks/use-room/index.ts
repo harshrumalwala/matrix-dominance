@@ -15,7 +15,11 @@ const useRoom = (): RoomOutput => {
   const { isFetching: isFetchingUsers, users } = useUsers(room?.players);
 
   useEffect(() => {
-    users && !_.isEmpty(users) && setRoom(enrichRoom(firebaseRoom!, users));
+    if (users && !_.isEmpty(users) && firebaseRoom) {
+      users?.[firebaseRoom.host!]
+        ? setRoom(enrichRoom(firebaseRoom, users))
+        : setRoom(undefined);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(users)]);
 
@@ -27,6 +31,9 @@ const useRoom = (): RoomOutput => {
         if (doc.exists) {
           setRoom(enrichRoom(doc.data() as Room, users));
           setFireBaseRoom(doc.data() as Room);
+        } else {
+          setRoom(undefined);
+          setFireBaseRoom(undefined);
         }
         setIsFetching(false);
       });

@@ -12,19 +12,18 @@ const NewGameModal: FC<{
   const history = useHistory();
   const { isShowing, toggle } = useModal();
   const [matrixSize, setMatrixSize] = useState<number | undefined>(undefined);
-  const [matrixSizeError, setMatrixSizeError] = useState<string>(
-    ''
-  );
+  const [matrixSizeError, setMatrixSizeError] = useState<string>('');
   const { isCreatingNewGame, createNewGame } = useCreateNewGame(isExisting);
-  const currentUser = useCurrentUser();
-  
+  const { currentUser } = useCurrentUser();
+
   useEffect(() => {
     setMatrixSizeError('');
-  }, [matrixSize]);  
+  }, [matrixSize]);
 
   useEffect(() => {
     matrixSize &&
-    (parseInt(matrixSize.toString()) < 3 || parseInt(matrixSize.toString()) > 10) &&
+      (parseInt(matrixSize.toString()) < 3 ||
+        parseInt(matrixSize.toString()) > 10) &&
       setMatrixSizeError('Board size should be in between 3 and 10');
   }, [matrixSize]);
 

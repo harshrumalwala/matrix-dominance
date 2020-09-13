@@ -17,7 +17,7 @@ const Room = () => {
   const history = useHistory();
   const { isFetching, isFetchingUsers, room, users } = useRoom();
   const { isConnectingDots, connectDots } = useConnectDots();
-  const currentUser = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
   useDimensions();
 

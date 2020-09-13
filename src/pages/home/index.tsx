@@ -6,7 +6,10 @@ import { useCurrentUser } from 'hooks';
 
 const Home = () => {
   const history = useHistory();
-  const currentUser = useCurrentUser();
+  const { currentUser, isLoading } = useCurrentUser();
+
+  if(isLoading)
+    return <Header>Loading...</Header>
 
   const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

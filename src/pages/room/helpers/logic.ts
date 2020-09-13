@@ -251,14 +251,14 @@ export const enrichRoom = (
   const matrix: Array<string | null> = _.reduce(
     room.matrix,
     (acc: Array<string | null>, v: string | null) => {
-      v ? acc.push(users[v].nameInitials) : acc.push(null);
+      v ? acc.push(users[v]?.nameInitials) : acc.push(null);
       return acc;
     },
     [],
   );
   const message = isMatrixComplete(room.matrix)
     ? getWinner(room.matrix, users)
-    : `${users[room.players[room.playerTurn]].nickName}'s turn`;
+    : `${users[room.players[room.playerTurn]]?.nickName}'s turn`;
   return {
     ...room,
     matrix,
