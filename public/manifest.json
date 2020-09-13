@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Matrix Dominance",
+  "name": "Matrix Dominance - game of dots and boxes",
   "icons": [
     {
       "src": "favicon.ico",
